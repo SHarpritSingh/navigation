@@ -10,31 +10,43 @@ window.onload = function() {
 };
 
 keyhandler.handleUp = function () {
-  var lastFocus = focusedElm;
-  focusedElm = iterators.getUpFocusable(focusedElm);
-  unsetFocus(lastFocus);
-  setFocus(focusedElm);
+  var lastFocus = focusedElm;  
+  var tmp = iterators.getUpFocusable(focusedElm);
+  if(tmp){
+    focusedElm = tmp;
+    unsetFocus(lastFocus);
+    setFocus(focusedElm);
+  }
 };
 
 keyhandler.handleDown = function () {
   var lastFocus = focusedElm;
-  focusedElm = iterators.getDownFocusable(focusedElm);
-  unsetFocus(lastFocus);
-  setFocus(focusedElm);
+  var tmp = iterators.getDownFocusable(focusedElm);
+  if(tmp){
+    focusedElm = tmp;
+    unsetFocus(lastFocus);
+    setFocus(focusedElm);
+  }
 };
 
 keyhandler.handleLeft = function () {
   var lastFocus = focusedElm;
-  focusedElm = iterators.getLeftFocusable(focusedElm);
-  unsetFocus(lastFocus);
-  setFocus(focusedElm);
+  var tmp = iterators.getLeftFocusable(focusedElm);
+  if(tmp){
+    focusedElm = tmp;
+    unsetFocus(lastFocus);
+    setFocus(focusedElm);
+  }
 };
 
 keyhandler.handleRight = function () {
   var lastFocus = focusedElm;
-  focusedElm = iterators.getRightFocusable(focusedElm);
-  unsetFocus(lastFocus);
-  setFocus(focusedElm);
+  var tmp = iterators.getRightFocusable(focusedElm);
+  if(tmp){
+    focusedElm = tmp;
+    unsetFocus(lastFocus);
+    setFocus(focusedElm);
+  }
 };
 
 keyhandler.register = function () {
@@ -60,15 +72,10 @@ function init () {
   // set default focus
   app = document.getElementById('app');
   parent_nav = app.getAttribute('data-nav');
-  if(parent_nav === 'vertical-container'){
-    console.info('!!!!!!!!!!!!!!!!!!! VERTICAL STYLE TEMPLATE !!!!!!!!!!!!!!!!!!!');
-    var firstChild, firstFocusableChild;
-    firstChild = app.firstElementChild;
-    if(firstChild){
-      firstFocusableChild = iterators.getFirstFocusable(firstChild);
+  if(parent_nav === 'top-container'){ 
+      var firstFocusableChild = iterators.getFirstFocusable(app);
       setFocus(firstFocusableChild);
       focusedElm = firstFocusableChild;
-    }
   }
   keyhandler.register();
 }
@@ -97,9 +104,11 @@ iterators.getUpFocusable = function (elm) {
   if( parent.getAttribute('data-nav')==='vertical-container' || parent.getAttribute('id')==='app'){
     return iterators.getFirstFocusable(iterators.getPrevFocusableSibling(elm));
   }else if (parent.getAttribute('data-nav')==='horizontal-container') {
-    if (grandParent && grandParent.getAttribute('data-nav') === 'vertical-container') {
+    if (grandParent && (grandParent.getAttribute('data-nav') === 'vertical-container'|| grandParent.getAttribute('data-nav') === 'top-container')) {
       return iterators.getFirstFocusable(iterators.getPrevFocusableSibling(parent));
     }
+  }else if(parent.getAttribute('data-nav') === 'top-container'){
+    return false;
   }
   return false;
 };
@@ -114,9 +123,11 @@ iterators.getDownFocusable = function (elm) {
   if( parent.getAttribute('data-nav')==='vertical-container' || parent.getAttribute('id')==='app'){
     return iterators.getFirstFocusable(iterators.getNextFocusableSibling(elm));
   }else if (parent.getAttribute('data-nav')==='horizontal-container') {
-    if (grandParent && grandParent.getAttribute('data-nav') === 'vertical-container') {
+    if (grandParent && (grandParent.getAttribute('data-nav') === 'vertical-container' || grandParent.getAttribute('data-nav') === 'top-container')) {
       return iterators.getFirstFocusable(iterators.getNextFocusableSibling(parent));
     }
+  }else if(parent.getAttribute('data-nav') === 'top-container'){
+    return false;
   }
   return false;
 };
@@ -131,14 +142,17 @@ iterators.getRightFocusable = function (elm) {
   
   if(parent.getAttribute('id')==='app'){
     return false;
-  }
+  } 
+  
   
   if(parent.getAttribute('data-nav') === 'horizontal-container'){
     return iterators.getNextFocusableSibling(elm);
   }else if (parent.getAttribute('data-nav') === 'vertical-container') {
-    if(grandParent && grandParent.getAttribute('data-nav') === 'horizontal-container'){
+    if(grandParent && (grandParent.getAttribute('data-nav') === 'horizontal-container'|| grandParent.getAttribute('data-nav') === 'top-container')){
       return iterators.getFirstFocusable(iterators.getNextFocusableSibling(parent));
     }
+  }else if(parent.getAttribute('data-nav') === 'top-container'){
+    return false;
   }
   return false;  
 };
@@ -158,13 +172,16 @@ iterators.getLeftFocusable = function (elm) {
   if(parent.getAttribute('data-nav') === 'horizontal-container'){
     return iterators.getPrevFocusableSibling(elm);
   }else if (parent.getAttribute('data-nav') === 'vertical-container') {
-    if(grandParent && grandParent.getAttribute('data-nav') === 'horizontal-container'){
+    if(grandParent && (grandParent.getAttribute('data-nav') === 'horizontal-container'|| grandParent.getAttribute('data-nav') === 'top-container')){
       return iterators.getFirstFocusable(iterators.getNextFocusableSibling(parent));
     }
+  }else if(parent.getAttribute('data-nav') === 'top-container'){
+    return false;
   }
   return false;
 };
 
+/*
 iterators.getFirstFocusable = function (elm) {
   if(!elm){
     return false;
@@ -179,10 +196,27 @@ iterators.getFirstFocusable = function (elm) {
   }
   return elm;
 };
+*/
+
+
+iterators.getFirstFocusable = function (elm) {  
+  if(!elm){
+    return false;
+  }
+  if(elm.getAttribute('data-nav') === 'focusable'){
+    return elm;
+  }else{
+    return iterators.getNextFocusableSibling(elm.firstElementChild);
+  }
+  return false;
+};
 
 iterators.getNextFocusableSibling = function (elm) {
   if(!elm){
     return false;
+  }
+  if(elm.getAttribute('data-nav') === 'focusable'){
+    return elm;
   }
   var nxtSibling = iterators.getNextSibling(elm);
   if(nxtSibling){
@@ -198,6 +232,9 @@ iterators.getNextFocusableSibling = function (elm) {
 iterators.getPrevFocusableSibling = function (elm) {
   if(!elm){
     return false;
+  }
+  if(elm.getAttribute('data-nav') === 'focusable'){
+    return elm;
   }
   var prevSibling = iterators.getPrevSibling(elm);
   if(prevSibling){
