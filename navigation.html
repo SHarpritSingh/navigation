@@ -2,7 +2,7 @@
 <head>
 <link rel='stylesheet' href='navigation.css'></link>
 </head>
-<body>
+<body onload='loaded()'>
 <div style = "position:relative; outline:solid red; height:500px; width:500px" id = 'app' data-default='' data-nav='top-container'>
   <div style = 'position:relative; outline:solid green; height:25px; width:25px' id='child0' ></div>
   <div style = 'position:relative; outline:solid green; height:25px; width:25px' id='child1' data-nav='focusable'></div>
@@ -13,14 +13,14 @@
     <div style = 'position:relative; outline:solid green; height:25px; width:25px;float:left' id='b1child3' data-nav='focusable'></div>
     <div style = 'position:relative; outline:solid green; height:25px; width:25px;float:left' id='b1child4' data-nav='focusable'></div>
   </div>
-    <div style = "position:relative; outline:solid orange; height:28px; width:500px" id='box1' data-nav='horizontal-container'>
+    <div style = "position:relative; outline:solid orange; height:28px; width:500px" id='box2' data-nav='horizontal-container'>
     <div style = 'position:relative; outline:solid green; height:25px; width:25px; float:left; margin-left:2px' id='b1child1' data-nav='focusable'></div>
     <div style = 'position:relative; outline:solid green; height:25px; width:25px;float:left' id='b1child2' data-nav='focusable'></div>
     <div style = 'position:relative; outline:solid green; height:25px; width:25px;float:left' id='b1child3' data-nav='focusable'></div>
     <div style = 'position:relative; outline:solid green; height:25px; width:25px;float:left' id='b1child4' data-nav='focusable'></div>
   </div>
   <div style = 'position:relative; outline:solid green; height:25px; width:25px' id='child1' data-nav='focusable'></div>
-    <div style = "position:relative; outline:solid orange; height:28px; width:500px" id='box1' data-nav='horizontal-container'>
+    <div style = "position:relative; outline:solid orange; height:28px; width:500px" id='box3' data-nav='horizontal-container'>
     <div style = 'position:relative; outline:solid green; height:25px; width:25px; float:left; margin-left:2px' id='b1child1' data-nav='focusable'></div>
     <div style = 'position:relative; outline:solid green; height:25px; width:25px;float:left' id='b1child2' data-nav='focusable'></div>
     <div style = 'position:relative; outline:solid green; height:25px; width:25px;float:left' id='b1child3' data-nav='focusable'></div>
@@ -29,5 +29,10 @@
 </div>
 </div>
 <script src='navigation.js' type='text/javascript'></script>
+<script>
+function loaded () {
+  enav.init();
+}
+</script>
 </body>
 </html>
