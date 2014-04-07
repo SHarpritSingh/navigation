@@ -181,24 +181,6 @@ iterators.getLeftFocusable = function (elm) {
   return false;
 };
 
-/*
-iterators.getFirstFocusable = function (elm) {
-  if(!elm){
-    return false;
-  }
-  var firstChild = elm.firstElementChild;
-  if(firstChild){
-    if(firstChild.getAttribute('data-nav') === 'container'){
-      iterators.getFirstFocusable(firstChild);
-    }else if (firstChild.getAttribute('data-nav') === 'focusable') {
-      return firstChild;
-    }
-  }
-  return elm;
-};
-*/
-
-
 iterators.getFirstFocusable = function (elm) {  
   if(!elm){
     return false;
@@ -206,6 +188,9 @@ iterators.getFirstFocusable = function (elm) {
   if(elm.getAttribute('data-nav') === 'focusable'){
     return elm;
   }else{
+    if(elm.firstElementChild && elm.firstElementChild.getAttribute('data-nav') === 'focusable'){
+      return elm.firstElementChild;
+    }
     return iterators.getNextFocusableSibling(elm.firstElementChild);
   }
   return false;
@@ -214,10 +199,7 @@ iterators.getFirstFocusable = function (elm) {
 iterators.getNextFocusableSibling = function (elm) {
   if(!elm){
     return false;
-  }
-  if(elm.getAttribute('data-nav') === 'focusable'){
-    return elm;
-  }
+  } 
   var nxtSibling = iterators.getNextSibling(elm);
   if(nxtSibling){
     if(nxtSibling.getAttribute('data-nav').indexOf('container') !== -1){
@@ -232,9 +214,6 @@ iterators.getNextFocusableSibling = function (elm) {
 iterators.getPrevFocusableSibling = function (elm) {
   if(!elm){
     return false;
-  }
-  if(elm.getAttribute('data-nav') === 'focusable'){
-    return elm;
   }
   var prevSibling = iterators.getPrevSibling(elm);
   if(prevSibling){
