@@ -1,4 +1,3 @@
-// vertical style implementation
 var keyhandler = {}
     , app
     , parent_nav
@@ -10,7 +9,7 @@ window.onload = function() {
 };
 
 keyhandler.handleUp = function () {
-  var lastFocus = focusedElm;  
+  var lastFocus = focusedElm;
   var tmp = iterators.getUpFocusable(focusedElm);
   if(tmp){
     focusedElm = tmp;
@@ -50,7 +49,7 @@ keyhandler.handleRight = function () {
 };
 
 keyhandler.register = function () {
-  document.onkeydown=function(e){
+  document.onkeyup=function(e){
     switch (e.keyCode) {
       case 38 :
         keyhandler.handleUp();
@@ -63,7 +62,7 @@ keyhandler.register = function () {
         break;
       case 39 :
         keyhandler.handleRight();
-        break;        
+        break;
     }
   }
 };
@@ -72,7 +71,7 @@ function init () {
   // set default focus
   app = document.getElementById('app');
   parent_nav = app.getAttribute('data-nav');
-  if(parent_nav === 'top-container'){ 
+  if(parent_nav === 'top-container'){
       var firstFocusableChild = iterators.getFirstFocusable(app);
       setFocus(firstFocusableChild);
       focusedElm = firstFocusableChild;
@@ -95,103 +94,111 @@ function unsetFocus (elm) {
 }
 
 iterators.getUpFocusable = function (elm) {
-  if(!elm){
+   if(!elm){
+    return false;
+  }else if(elm.getAttribute('data-nav') === 'top-container'){
     return false;
   }
-  var parent, grandParent;
+
+  var parent;
   parent = elm.parentNode;
-  grandParent = parent ? parent.parentNode : false;
-  if( parent.getAttribute('data-nav')==='vertical-container' || parent.getAttribute('id')==='app'){
-    return iterators.getFirstFocusable(iterators.getPrevFocusableSibling(elm));
-  }else if (parent.getAttribute('data-nav')==='horizontal-container') {
-    if (grandParent && (grandParent.getAttribute('data-nav') === 'vertical-container'|| grandParent.getAttribute('data-nav') === 'top-container')) {
-      return iterators.getFirstFocusable(iterators.getPrevFocusableSibling(parent));
+
+  if(parent){
+    if(parent.getAttribute('data-nav') === 'vertical-container'){
+      return iterators.getPrevFocusableSibling(elm);
+    }else if(parent.getAttribute('data-nav') === 'top-container'){
+      return iterators.getPrevFocusableSibling(elm);
+    }else{
+      return iterators.getUpFocusable(parent);
     }
-  }else if(parent.getAttribute('data-nav') === 'top-container'){
-    return false;
   }
+
   return false;
 };
 
 iterators.getDownFocusable = function (elm) {
   if(!elm){
     return false;
-  }
-  var parent, grandParent;
-  parent = elm.parentNode;
-  grandParent = parent ? parent.parentNode : false;
-  if( parent.getAttribute('data-nav')==='vertical-container' || parent.getAttribute('id')==='app'){
-    return iterators.getFirstFocusable(iterators.getNextFocusableSibling(elm));
-  }else if (parent.getAttribute('data-nav')==='horizontal-container') {
-    if (grandParent && (grandParent.getAttribute('data-nav') === 'vertical-container' || grandParent.getAttribute('data-nav') === 'top-container')) {
-      return iterators.getFirstFocusable(iterators.getNextFocusableSibling(parent));
-    }
-  }else if(parent.getAttribute('data-nav') === 'top-container'){
+  }else if(elm.getAttribute('data-nav') === 'top-container'){
     return false;
   }
+
+  var parent;
+  parent = elm.parentNode;
+
+
+  if(parent){
+    if(parent.getAttribute('data-nav') === 'vertical-container'){
+      return iterators.getNextFocusableSibling(elm);
+    }else if(parent.getAttribute('data-nav') === 'top-container'){
+      return iterators.getNextFocusableSibling(elm);
+    }else{
+      return iterators.getDownFocusable(parent);
+    }
+  }
+
   return false;
 };
 
 iterators.getRightFocusable = function (elm) {
   if(!elm){
     return false;
-  }
-  var parent, grandParent;
-  parent = elm.parentNode;
-  grandParent = parent ? parent.parentNode : false;
-  
-  if(parent.getAttribute('id')==='app'){
+  }else if(elm.getAttribute('data-nav') === 'top-container'){
     return false;
-  } 
-  
-  
-  if(parent.getAttribute('data-nav') === 'horizontal-container'){
-    return iterators.getNextFocusableSibling(elm);
-  }else if (parent.getAttribute('data-nav') === 'vertical-container') {
-    if(grandParent && (grandParent.getAttribute('data-nav') === 'horizontal-container'|| grandParent.getAttribute('data-nav') === 'top-container')){
-      return iterators.getFirstFocusable(iterators.getNextFocusableSibling(parent));
+  }
+
+  var parent=elm.parentNode;
+
+  if(parent){
+    if(parent.getAttribute('data-nav') === 'horizontal-container'){
+      return iterators.getNextFocusableSibling(elm);
+    }else if(parent.getAttribute('data-nav') === 'top-container'){
+      return iterators.getNextFocusableSibling(elm);
+    }else{
+      return iterators.getRightFocusable(parent);
     }
-  }else if(parent.getAttribute('data-nav') === 'top-container'){
-    return false;
   }
-  return false;  
+
+  return false;
 };
 
 iterators.getLeftFocusable = function (elm) {
   if(!elm){
     return false;
-  }
-  var parent, grandParent;
-  parent = elm.parentNode;
-  grandParent = parent ? parent.parentNode : false;
-  
-  if(parent.getAttribute('id')==='app'){
+  }else if(elm.getAttribute('data-nav') === 'top-container'){
     return false;
   }
-  
-  if(parent.getAttribute('data-nav') === 'horizontal-container'){
-    return iterators.getPrevFocusableSibling(elm);
-  }else if (parent.getAttribute('data-nav') === 'vertical-container') {
-    if(grandParent && (grandParent.getAttribute('data-nav') === 'horizontal-container'|| grandParent.getAttribute('data-nav') === 'top-container')){
-      return iterators.getFirstFocusable(iterators.getNextFocusableSibling(parent));
+
+  var parent=elm.parentNode;
+
+  if(parent){
+    if(parent.getAttribute('data-nav') === 'horizontal-container'){
+      return iterators.getPrevFocusableSibling(elm);
+    }else if(parent.getAttribute('data-nav') === 'top-container'){
+      return iterators.getPrevFocusableSibling(elm);
+    }else{
+      return iterators.getLeftFocusable(parent);
     }
-  }else if(parent.getAttribute('data-nav') === 'top-container'){
-    return false;
   }
-  return false;
+
+return false;
 };
 
-iterators.getFirstFocusable = function (elm) {  
+iterators.getFirstFocusable = function (elm) {
   if(!elm){
     return false;
   }
-  if(elm.getAttribute('data-nav') === 'focusable'){
+  if(elm && elm.getAttribute("data-nav") === 'focusable'){
     return elm;
-  }else{
-    if(elm.firstElementChild && elm.firstElementChild.getAttribute('data-nav') === 'focusable'){
-      return elm.firstElementChild;
-    }
-    return iterators.getNextFocusableSibling(elm.firstElementChild);
+  }
+
+  var all = elm.getElementsByTagName("*");
+
+  for (var i=0, max=all.length; i < max; i++) {
+    if(all[i].getAttribute("data-nav") === 'focusable'){
+      return all[i];
+    };
+
   }
   return false;
 };
@@ -199,31 +206,35 @@ iterators.getFirstFocusable = function (elm) {
 iterators.getNextFocusableSibling = function (elm) {
   if(!elm){
     return false;
-  } 
+  }
+
   var nxtSibling = iterators.getNextSibling(elm);
-  if(nxtSibling){
-    if(nxtSibling.getAttribute('data-nav').indexOf('container') !== -1){
-      return iterators.getFirstFocusable(nxtSibling);
-    }else if (nxtSibling.getAttribute('data-nav') === 'focusable') {
-      return nxtSibling;
+  if(nxtSibling ){
+    var focusable = iterators.getFirstFocusable(nxtSibling);
+    if(focusable){
+      return focusable;
+    }else{
+      return iterators.getNextFocusableSibling(nxtSibling);
     }
   }
-  return elm;
+  return false;
 };
 
 iterators.getPrevFocusableSibling = function (elm) {
-  if(!elm){
+    if(!elm){
     return false;
   }
-  var prevSibling = iterators.getPrevSibling(elm);
-  if(prevSibling){
-    if(prevSibling.getAttribute('data-nav').indexOf('container') !== -1){
-      return iterators.getFirstFocusable(prevSibling);
-    }else if (prevSibling.getAttribute('data-nav') === 'focusable') {
-      return prevSibling;
+
+  var nxtSibling = iterators.getPrevSibling(elm);
+  if(nxtSibling ){
+    var focusable = iterators.getFirstFocusable(nxtSibling);
+    if(focusable){
+      return focusable;
+    }else{
+      return iterators.getPrevFocusableSibling(nxtSibling);
     }
   }
-  return elm;
+  return false;
 }
 
 // get non emppty text node as next sibling
