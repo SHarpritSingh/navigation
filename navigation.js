@@ -146,12 +146,12 @@ enav.upCallback, enav.downCallback, enav.leftCallback, enav.rightCallback, enav.
     if(!elm){
       return false;
     }
-    if(elm && elm.getAttribute("data-nav") === 'focusable'){
+    if(elm && elm.getAttribute("data-nav") === 'focusable' && isVisible(elm)){
       return elm;
     }
     all = elm.getElementsByTagName("*");
     for (var i=0, max=all.length; i < max; i++) {
-      if(all[i].getAttribute("data-nav") === 'focusable'){
+      if(all[i].getAttribute("data-nav") === 'focusable' && isVisible(all[i])){
         return all[i];
       }
     }
@@ -164,7 +164,7 @@ enav.upCallback, enav.downCallback, enav.leftCallback, enav.rightCallback, enav.
       return false;
     }
     nxtSibling = this.getNextSibling(elm);
-    if(nxtSibling ){
+    if(nxtSibling){
       var focusable = this.getFirstFocusable(nxtSibling);
       if(focusable){
         return focusable;
@@ -243,7 +243,7 @@ enav.upCallback, enav.downCallback, enav.leftCallback, enav.rightCallback, enav.
   };
 
   function isVisible(elem) {
-    if(elem.offsetWidth === 0 && elem.offsetHeight === 0){
+    if(elem.offsetWidth === 0 && elem.offsetHeight === 0 || elem.style.visibility==='hidden' || elem.parentNode.style.visibility==='hidden'){
       return false;
     }
     return true;
@@ -256,19 +256,19 @@ enav.upCallback, enav.downCallback, enav.leftCallback, enav.rightCallback, enav.
     var target, observer, config;
     // select the target node
     target = document.querySelector('#app');
-     
+
     // create an observer instance
     observer = new MutationObserver(function(mutations) {
       mutations.forEach(function(mutation) {
         if(! isVisible(focusedElm)){
           resetFocus(defaultFocus);
         };
-      });    
+      });
     });
-     
+
     // configuration of the observer:
     config = { attributes: true, childList: true, characterData: true, subtree: true};
-     
+
     // pass in the target node, as well as the observer options
     observer.observe(target, config);
   }
@@ -285,14 +285,15 @@ enav.upCallback, enav.downCallback, enav.leftCallback, enav.rightCallback, enav.
     }
     keyhandler.register.call(this);
   }
-}).apply(enav);
 
-/*
+
 setTimeout(function(){
-  hide();
+  //hide();
 },10000);
 
 function hide () {
   document.getElementById('box1').style.display = 'none';
 }
-*/
+
+}).apply(enav);
+
